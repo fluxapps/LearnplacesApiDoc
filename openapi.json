@@ -1,0 +1,700 @@
+{
+  "openapi": "3.0.0",
+  "info": {
+    "title": "learnPlaces",
+    "version": " 1.0.0",
+    "license": {
+      "name": "GPL-3.0-or-later"
+    },
+    "contact": {
+      "name": "Martin Studer"
+    }
+  },
+  "paths": {
+    "/containers": {
+      "get": {
+        "description": "Returns all containers (courses, groups) from the system that user has access to and contains in minimum one learning place and a map configuration",
+        "responses": {
+          "200": {
+            "description": "A list of containers",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/container"
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/containers/{refId": {
+      "parameters": [
+        {
+          "name": "refId",
+          "in": "path",
+          "required": true,
+          "description": "The refId of the container",
+          "schema": {
+            "type": "integer"
+          }
+        }
+      ],
+      "get": {
+        "responses": {
+          "200": {
+            "description": "A course or group as a learnPlace container",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/container"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "No access"
+          },
+          "404": {
+            "description": "Container not found"
+          }
+        }
+      }
+    },
+    "/containers/{refId}/learnplaces": {
+      "parameters": [
+        {
+          "name": "refId",
+          "in": "path",
+          "required": true,
+          "description": "The refId of the container",
+          "schema": {
+            "type": "integer"
+          }
+        }
+      ],
+      "get": {
+        "responses": {
+          "200": {
+            "description": "A collection of learnPlaces",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/learnPlace"
+                  }
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "No access"
+          },
+          "404": {
+            "description": "Container not found"
+          }
+        }
+      }
+    },
+    "/images/{imageId}": {
+      "get": {
+        "summary": "Get Image",
+        "description": "Retrieve a PNG image based on the image ID.",
+        "parameters": [
+          {
+            "name": "imageId",
+            "in": "path",
+            "required": true,
+            "description": "The ID of the image to retrieve.",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful response",
+            "content": {
+              "image/png": {
+                "schema": {
+                  "type": "string",
+                  "format": "binary"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "No access"
+          },
+          "404": {
+            "description": "Image not found"
+          }
+        }
+      }
+    },
+    "/images/{imageId}/thumbnail": {
+      "get": {
+        "summary": "Get Thumbnail",
+        "description": "Retrieve a thumbnail (reduced version) of the PNG image based on the image ID.",
+        "parameters": [
+          {
+            "name": "imageId",
+            "in": "path",
+            "required": true,
+            "description": "The ID of the image for which to retrieve the thumbnail.",
+            "schema": {
+              "type": "integer"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful response",
+            "content": {
+              "image/png": {
+                "schema": {
+                  "type": "string",
+                  "format": "binary"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "No access"
+          },
+          "404": {
+            "description": "Image not found"
+          }
+        }
+      }
+    },
+    "/audios/{audioId}": {
+      "get": {
+        "summary": "Get Audio by URL",
+        "description": "Retrieve an audio file by providing a URL.",
+        "parameters": [
+          {
+            "name": "audioId",
+            "in": "path",
+            "required": true,
+            "description": "The ID of the audio resource.",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful response",
+            "content": {
+              "audio/mpeg": {
+                "schema": {
+                  "type": "string",
+                  "format": "binary"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "No access"
+          },
+          "404": {
+            "description": "Audio not found"
+          }
+        }
+      }
+    },
+    "/videos/{videoId}": {
+      "get": {
+        "summary": "Get video by URL",
+        "description": "Retrieve an video file by providing a URL.",
+        "parameters": [
+          {
+            "name": "videoId",
+            "in": "path",
+            "required": true,
+            "description": "The ID of the video resource.",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful response",
+            "content": {
+              "video/mp4:": {
+                "schema": {
+                  "type": "string",
+                  "format": "binary"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "No access"
+          },
+          "404": {
+            "description": "Video not found"
+          }
+        }
+      }
+    }
+  },
+  "components": {
+    "schemas": {
+      "container": {
+        "type": "object",
+        "required": [
+          "refId",
+          "title",
+          "path",
+          "containerType",
+          "map"
+        ],
+        "example": {
+          "refId": 42,
+          "title": "Geology",
+          "description": "The elective specialization \"Geology\" introduces students to concepts and techniques to investigate the various properties of rocks and minerals",
+          "path": "Faculty of Natural Sciences > Geological Institute > 1st semester",
+          "containerType": "course",
+          "mapConfiguration": {
+            "lat": 10.238972,
+            "lng": -23.433449,
+            "zoom": 13
+          }
+        },
+        "properties": {
+          "refId": {
+            "type": "integer"
+          },
+          "title": {
+            "type": "string"
+          },
+          "description": {
+            "type": "string"
+          },
+          "path": {
+            "description": "The category path of the container",
+            "type": "string"
+          },
+          "containerType": {
+            "type": "string",
+            "enum": [
+              "course",
+              "group"
+            ]
+          },
+          "map": {
+            "$ref": "#/components/schemas/mapElement"
+          }
+        }
+      },
+      "learnPlace": {
+        "type": "object",
+        "required": [
+          "mapMarker",
+          "images",
+          "visitJournal"
+        ],
+        "properties": {
+          "mapMarker": {
+            "$ref": "#/components/schemas/mapMarkerElement"
+          },
+          "images": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/imageElement"
+            }
+          },
+          "visitJournal": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/visitJournalItem"
+            }
+          },
+          "blocks": {
+            "description": "An already sorted collection of blocks",
+            "type": "array",
+            "items": {
+              "anyOf": [
+                {
+                  "$ref": "#/components/schemas/accordionBlock"
+                },
+                {
+                  "$ref": "#/components/schemas/audioBlock"
+                },
+                {
+                  "$ref": "#/components/schemas/externalStreamBlock"
+                },
+                {
+                  "$ref": "#/components/schemas/commentsBlock"
+                },
+                {
+                  "$ref": "#/components/schemas/horizontalLineBlock"
+                },
+                {
+                  "$ref": "#/components/schemas/iliasLinkBlock"
+                },
+                {
+                  "$ref": "#/components/schemas/imageBlock"
+                },
+                {
+                  "$ref": "#/components/schemas/richTextBlock"
+                },
+                {
+                  "$ref": "#/components/schemas/videoBlock"
+                }
+              ]
+            }
+          }
+        }
+      },
+      "visitJournalItem": {
+        "type": "object",
+        "description": "Visit timestamp for the current user at a learning place",
+        "required": [
+          "visitedDateTime"
+        ],
+        "properties": {
+          "visitedDateTime": {
+            "type": "string",
+            "format": "date-time"
+          }
+        }
+      },
+      "mapElement": {
+        "type": "object",
+        "required": [
+          "lat",
+          "long",
+          "zoom"
+        ],
+        "example": {
+          "lat": 10.238972,
+          "lng": -23.433449,
+          "zoom": 13
+        },
+        "properties": {
+          "lat": {
+            "description": "Latitude: geographical center to set the map view to.",
+            "type": "number"
+          },
+          "long": {
+            "description": "Longitude: geographical center to set the map view to.",
+            "type": "number"
+          },
+          "zoom": {
+            "description": "Zoom level to set the map view to.",
+            "type": "integer"
+          }
+        }
+      },
+      "mapMarkerElement": {
+        "type": "object",
+        "properties": {
+          "lat": {
+            "description": "The latitude coordinate of the marker.",
+            "type": "number"
+          },
+          "long": {
+            "description": "The longitude coordinate of the marker.",
+            "type": "number"
+          },
+          "radius": {
+            "description": " The radius of the marker.",
+            "type": "number"
+          }
+        }
+      },
+      "imageElement": {
+        "type": "object",
+        "required": [
+          "thumbnailUrl",
+          "imageUrl"
+        ],
+        "example": {
+          "url": "https://example.com/images/8df6e2e7-4da5-4f18-8a60-2a65ab5b41e4",
+          "thumbnailUrl": "https://example.com/images/8df6e2e7-4da5-4f18-8a60-2a65ab5b41e4/thumbail"
+        },
+        "properties": {
+          "title": {
+            "type": "string"
+          },
+          "description": {
+            "type": "string"
+          },
+          "url": {
+            "type": "string",
+            "format": "uri"
+          },
+          "thumbnailUrl": {
+            "type": "string",
+            "format": "uri"
+          }
+        }
+      },
+      "audioElement": {
+        "type": "object",
+        "required": [
+          "url"
+        ],
+        "example": {
+          "url": "https://example.com/audios/856e2e7-4da5-4f18-8a60-2a65ab534593"
+        },
+        "properties": {
+          "url": {
+            "type": "string",
+            "format": "uri"
+          }
+        }
+      },
+      "videoElement": {
+        "type": "object",
+        "required": [
+          "url"
+        ],
+        "example": {
+          "url": "https://example.com/videos/856e2e7-4da5-4f18-8a60-2a65ab534593"
+        },
+        "properties": {
+          "url": {
+            "type": "string",
+            "format": "uri"
+          }
+        }
+      },
+      "commentElement": {
+        "type": "object",
+        "required": [
+          "createdDateTime",
+          "title",
+          "textContent",
+          "userProfil"
+        ],
+        "properties": {
+          "createdDateTime": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "title": {
+            "type": "string"
+          },
+          "textContent": {
+            "type": "string"
+          },
+          "imageContent": {
+            "$ref": "#/components/schemas/imageElement"
+          },
+          "userProfil": {
+            "$ref": "#/components/schemas/userProfil"
+          },
+          "reactions": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/commentElement"
+            }
+          }
+        }
+      },
+      "streamElement": {
+        "type": "object",
+        "required": [
+          "url"
+        ],
+        "example": {
+          "url": "https://sowmeWhere.com/xyz"
+        },
+        "properties": {
+          "url": {
+            "type": "string",
+            "format": "uri"
+          }
+        }
+      },
+      "feedbackElement": {
+        "type": "object",
+        "required": [
+          "textContent, userProfil"
+        ],
+        "properties": {
+          "textContent": {
+            "type": "string"
+          },
+          "userProfil": {
+            "$ref": "#/components/schemas/userProfil"
+          }
+        }
+      },
+      "iliasLinkElement": {
+        "type": "object",
+        "required": [
+          "url",
+          "refId"
+        ],
+        "example": {
+          "url": "https://sowmeWhere.com/xyz"
+        },
+        "properties": {
+          "url": {
+            "type": "string",
+            "format": "uri"
+          },
+          "refId": {
+            "type": "integer"
+          }
+        }
+      },
+      "userProfil": {
+        "type": "object",
+        "properties": {
+          "name": {
+            "type": "string"
+          },
+          "image": {
+            "$ref": "#/components/schemas/imageElement"
+          }
+        }
+      },
+      "block": {
+        "properties": {
+          "blockType": {
+            "type": "string",
+            "enum": [
+              "accordion",
+              "audio",
+              "comments",
+              "externalStream",
+              "richText",
+              "horizontalLine",
+              "iliasLink",
+              "image",
+              "video"
+            ]
+          }
+        }
+      },
+      "accordionBlock": {
+        "allOf": [
+          {
+            "$ref": "#/components/schemas/block"
+          },
+          {
+            "type": "object",
+            "properties": {
+              "title": {
+                "type": "string"
+              },
+              "expanded": {
+                "type": "boolean"
+              },
+              "contentBlocks": {
+                "description": "An already sorted collection of blocks",
+                "type": "array",
+                "items": {
+                  "anyOf": [
+                    {
+                      "$ref": "#/components/schemas/block"
+                    }
+                  ]
+                }
+              }
+            }
+          }
+        ]
+      },
+      "audioBlock": {
+        "allOf": [
+          {
+            "$ref": "#/components/schemas/block"
+          },
+          {
+            "$ref": "#/components/schemas/audioElement"
+          }
+        ]
+      },
+      "videoBlock": {
+        "allOf": [
+          {
+            "$ref": "#/components/schemas/block"
+          },
+          {
+            "$ref": "#/components/schemas/videoElement"
+          }
+        ]
+      },
+      "commentsBlock": {
+        "allOf": [
+          {
+            "$ref": "#/components/schemas/block"
+          },
+          {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/commentElement"
+            }
+          }
+        ]
+      },
+      "horizontalLineBlock": {
+        "allOf": [
+          {
+            "$ref": "#/components/schemas/block"
+          }
+        ]
+      },
+      "iliasLinkBlock": {
+        "allOf": [
+          {
+            "$ref": "#/components/schemas/block"
+          },
+          {
+            "$ref": "#/components/schemas/iliasLinkElement"
+          }
+        ]
+      },
+      "imageBlock": {
+        "allOf": [
+          {
+            "$ref": "#/components/schemas/block"
+          },
+          {
+            "$ref": "#/components/schemas/imageElement"
+          }
+        ]
+      },
+      "externalStreamBlock": {
+        "allOf": [
+          {
+            "$ref": "#/components/schemas/block"
+          },
+          {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/commentElement"
+            }
+          }
+        ]
+      },
+      "richTextBlock": {
+        "allOf": [
+          {
+            "$ref": "#/components/schemas/block"
+          },
+          {
+            "type": "object",
+            "properties": {
+              "content": {
+                "type": "string"
+              }
+            }
+          }
+        ]
+      }
+    }
+  }
+}
