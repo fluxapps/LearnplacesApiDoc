@@ -31,7 +31,7 @@
         }
       }
     },
-    "/containers/{refId": {
+    "/containers/{refId}": {
       "parameters": [
         {
           "name": "refId",
